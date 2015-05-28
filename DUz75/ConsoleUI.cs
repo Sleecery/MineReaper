@@ -9,10 +9,10 @@ namespace MineReaper
 {
     class ConsoleUI
     {
-        Field field;
+        public Field Field { get; set; }
         public ConsoleUI()
         {
-            field = new Field(9, 9, 1);
+            Field = new Field(9, 9, 1);
             while (true)
             {
                 Console.Clear();
@@ -20,7 +20,7 @@ namespace MineReaper
                 HandleInput();
             }
         }
-
+        
         private void UpdateUI()
         {
             ShowBattlefield();
@@ -33,22 +33,22 @@ namespace MineReaper
         {
             string input = Console.ReadLine();
             Regex rx = new Regex(@"^((?<exit>x)|(?<newgame>new game)|(?<step>step (?<row>[A-"
-                + Convert.ToChar('A' + field.RowCount - 1)
-                + "])(?<col>[0-" + (field.ColumnCount - 1) + "])))$",
+                + Convert.ToChar('A' + Field.RowCount - 1)
+                + "])(?<col>[0-" + (Field.ColumnCount - 1) + "])))$",
                 RegexOptions.IgnoreCase);
             Match match = rx.Match(input);
             if (match.Groups["exit"].Value != "")
                 Environment.Exit(0);
             else if (match.Groups["newgame"].Value != "")
-                field = new Field(field.RowCount,
-                    field.ColumnCount,
-                    field.Mines);
+                Field = new Field(Field.RowCount,
+                    Field.ColumnCount,
+                    Field.Mines);
             else if (match.Groups["step"].Value != "")
             {
                 int row = Convert.ToInt32(match.Groups["row"].Value[0] - 'a');
                 int col = Convert.ToInt32(match.Groups["col"].Value[0] - '0');
-                bool iDied = field.Step(row, col);
-                bool isWon = field.IsWon();
+                bool iDied = Field.Step(row, col);
+                bool isWon = Field.IsWon();
                 if (iDied)
                 {
                     Console.Clear();
@@ -70,23 +70,23 @@ namespace MineReaper
         public void ShowBattlefield()
         {
             Console.Write("  ");
-            for (int i = 0; i < field.ColumnCount; i++)
+            for (int i = 0; i < Field.ColumnCount; i++)
             {
                 Console.Write(i + " ");
             }
             Console.WriteLine();
-            for (int i = 0; i < field.RowCount; i++)
+            for (int i = 0; i < Field.RowCount; i++)
             {
                 Console.Write(Convert.ToChar('A' + i) + " ");
-                for (int j = 0; j < field.ColumnCount; j++)
+                for (int j = 0; j < Field.ColumnCount; j++)
                 {
-                    if (field[i, j].IsVisible)
+                    if (Field[i, j].IsVisible)
                     {
-                        if (field[i, j].IsMined)
+                        if (Field[i, j].IsMined)
                         {
                             Console.Write("X ");
                         }
-                        Console.Write(field[i, j].Value + " ");
+                        Console.Write(Field[i, j].Value + " ");
                     }
                     else
                         Console.Write("# ");
@@ -103,7 +103,7 @@ namespace MineReaper
                 string input = Console.ReadLine();
                 if (input.Equals("y"))
                 {
-                    field.Init();
+                    Field.Init();
                     break;
                 }
                 else if (input.Equals("n"))
